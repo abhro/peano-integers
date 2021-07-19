@@ -36,3 +36,13 @@ pred n        = Pred n
 succ :: Integer -> Integer
 succ (Pred n) = n
 succ n        = Succ n
+
+-- From here on in, all functions assume that they're working with the canonical
+-- form of an integer. So for actual use, (or more likely, testing within ghci)
+-- use `simplify` before calling these functions to avoid unexpected results
+
+-- negate an integer
+neg :: Integer -> Integer
+neg Zero     = Zero
+neg (Succ a) = Pred (neg a)
+neg (Pred a) = Succ (neg a)
