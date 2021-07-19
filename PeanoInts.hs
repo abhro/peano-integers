@@ -17,6 +17,9 @@ import Prelude (Show, undefined)
 -- definition) for more details.
 data Integer = Zero | Pred Integer | Succ Integer deriving Show
 
+-- Only so that we can support equality/comparison between two integers
+data Boolean = True | False deriving Show
+
 
 -- simplify chains of Pred and Succ which should never be chained together in
 -- canonical form
@@ -46,3 +49,16 @@ neg :: Integer -> Integer
 neg Zero     = Zero
 neg (Succ a) = Pred (neg a)
 neg (Pred a) = Succ (neg a)
+
+eq :: Integer -> Integer -> Boolean
+eq Zero      Zero     = True
+
+-- 0 is not equal to any nonzero integers
+eq (Succ a)  Zero     = False
+eq Zero     (Succ b)  = False
+eq (Pred a)  Zero     = False
+eq Zero     (Pred b)  = False
+
+eq (Succ a) (Succ b)  = eq a b
+eq (Pred a) (Pred b)  = eq a b
+eq _        _         = False
