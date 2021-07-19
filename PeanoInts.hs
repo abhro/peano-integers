@@ -86,3 +86,14 @@ lt (Succ a) (Pred b) = False
 lt (Pred a) (Succ b) = True
 lt (Succ a) (Succ b) = gt a b
 lt (Pred a) (Pred b) = gt a b
+
+add :: Integer -> Integer -> Integer
+add m    Zero  = m  -- additive identity
+add Zero n     = n  -- additive identity
+-- adding a positive number and a negative number
+add (Pred a) (Succ b) = add a b
+add (Succ a) (Pred b) = add a b
+-- adding two positive numbers
+add (Succ a) (Succ b) = add a (Succ (Succ b))
+-- adding two negative numbers
+add (Pred a) (Pred b) = add a (Pred (Pred b))
