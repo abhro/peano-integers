@@ -130,3 +130,23 @@ div :: Integer -> Integer -> Integer
 div m Zero = undefined -- panic. I'm not getting involved with Maybe
 div Zero n = Zero
 div m n    = error "Not yet implemented"
+
+-- Quick naming of numbers from -9 to 9 inclusive
+p1 = Succ Zero :: Integer
+p2 = Succ p1   :: Integer
+p3 = Succ p2   :: Integer
+p4 = Succ p3   :: Integer
+p5 = Succ p4   :: Integer
+p6 = Succ p5   :: Integer
+p7 = Succ p6   :: Integer
+p8 = Succ p7   :: Integer
+p9 = Succ p8   :: Integer
+n1 = Pred Zero :: Integer
+n2 = Pred n1   :: Integer
+n3 = Pred n2   :: Integer
+n4 = Pred n3   :: Integer
+n5 = Pred n4   :: Integer
+n6 = Pred n5   :: Integer
+n7 = Pred n6   :: Integer
+n8 = Pred n7   :: Integer
+n9 = Pred n8   :: Integer
