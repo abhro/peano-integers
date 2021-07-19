@@ -7,7 +7,7 @@
 --
 -- Some things have been ported (?) from Rust's Peano library
 
-import Prelude (Show, undefined)
+import Prelude (Show, undefined, error)
 
 -- An integer can be 0, the successor of another integer (which may or may not
 -- be zero), or the predecessor of another integer (which also may or may not be
@@ -117,3 +117,16 @@ sub (Pred a) (Succ b) = Pred (Pred (sub a b))
 -- only after writing all this code above did I figure out that the following
 -- was probably a better and more elegant way to implement subtraction
 -- sub m n = add m (neg n)
+
+mul :: Integer -> Integer -> Integer
+mul m           Zero        = Zero
+mul Zero        n           = Zero
+mul (Succ Zero) n           = n -- multiplicative identity
+mul m           (Succ Zero) = m -- multiplicative identity
+mul m           n           = error "Not yet implemented"
+
+-- Truncated integer division
+div :: Integer -> Integer -> Integer
+div m Zero = undefined -- panic. I'm not getting involved with Maybe
+div Zero n = Zero
+div m n    = error "Not yet implemented"
