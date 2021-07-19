@@ -21,10 +21,10 @@ data Integer = Zero | Pred Integer | Succ Integer deriving Show
 -- simplify chains of Pred and Succ which should never be chained together in
 -- canonical form
 simplify :: Integer -> Integer
-simplify (Pred (Succ n)) = reduce n
-simplify (Succ (Pred n)) = reduce n
-simplify (Succ n)        = Succ (reduce n)
-simplify (Pred n)        = Pred (reduce n)
+simplify (Pred (Succ n)) = simplify n
+simplify (Succ (Pred n)) = simplify n
+simplify (Succ n)        = Succ (simplify n)
+simplify (Pred n)        = Pred (simplify n)
 simplify n               = n
 
 -- Given n get n - 1
