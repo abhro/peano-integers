@@ -50,6 +50,12 @@ neg Zero     = Zero
 neg (Succ a) = Pred (neg a)
 neg (Pred a) = Succ (neg a)
 
+-- allow absolute value operations, |n|
+abs :: Integer -> Integer
+abs Zero     = Zero
+abs (Pred a) = Succ (abs a)
+abs n        = n
+
 eq :: Integer -> Integer -> Boolean
 eq Zero      Zero     = True
 
