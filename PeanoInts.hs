@@ -103,3 +103,17 @@ add (Succ a) (Pred b) = add a b
 add (Succ a) (Succ b) = add a (Succ (Succ b))
 -- adding two negative numbers
 add (Pred a) (Pred b) = add a (Pred (Pred b))
+
+-- Good news, subtraction is closed under this data type :)
+sub :: Integer -> Integer -> Integer
+sub  m        Zero    = m
+sub  Zero     n       = neg n
+-- subtracting a negative number from yourself is just adding that number's
+-- positive counterpart to yourself (n = Pred b)
+sub  m       (Pred b) = add m (neg (Pred b))
+-- subtract positive numbers off of you
+sub (Succ a) (Succ b) = sub a b
+sub (Pred a) (Succ b) = Pred (Pred (sub a b))
+-- only after writing all this code above did I figure out that the following
+-- was probably a better and more elegant way to implement subtraction
+-- sub m n = add m (neg n)
