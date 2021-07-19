@@ -26,3 +26,13 @@ simplify (Succ (Pred n)) = reduce n
 simplify (Succ n)        = Succ (reduce n)
 simplify (Pred n)        = Pred (reduce n)
 simplify n               = n
+
+-- Given n get n - 1
+pred :: Integer -> Integer
+pred (Succ n) = n
+pred n        = Pred n
+
+-- Given n get n + 1
+succ :: Integer -> Integer
+succ (Pred n) = n
+succ n        = Succ n
