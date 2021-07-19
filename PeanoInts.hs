@@ -62,3 +62,27 @@ eq Zero     (Pred b)  = False
 eq (Succ a) (Succ b)  = eq a b
 eq (Pred a) (Pred b)  = eq a b
 eq _        _         = False
+
+-- 0 is not greater than all positive numbers and is greater than all negative numbers
+-- `gt m n` is the syntactic equivalent of mathematical expression m > n
+gt  Zero   (Succ a) = False
+gt  Zero   (Pred a) = True
+gt (Pred a) Zero    = False
+gt (Succ a) Zero    = True
+-- all positive numbers are greater than negative numbers
+gt (Succ a) (Pred b) = True
+gt (Pred a) (Succ b) = False
+-- if you go to zero faster when unwrapping, you are not greater
+gt (Succ a) (Succ b) = gt a b
+-- if you go to zero faster when unwrapping, you are greater
+gt (Pred a) (Pred b) = gt a b
+
+-- same logic as `gt`, just flipped
+lt  Zero   (Succ a) = True
+lt  Zero   (Pred a) = False
+lt (Pred a) Zero    = True
+lt (Succ a) Zero    = False
+lt (Succ a) (Pred b) = False
+lt (Pred a) (Succ b) = True
+lt (Succ a) (Succ b) = gt a b
+lt (Pred a) (Pred b) = gt a b
