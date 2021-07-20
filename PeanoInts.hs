@@ -45,6 +45,10 @@ succ n        = Succ n
 -- use `simplify` before calling these functions to avoid unexpected results
 
 -- negate an integer
+-- implementation detail: the number doesn't actually strictly need to be in
+-- canonical form, it just flips all the `Succ`s and `Pred`s in its construction
+-- stack and so the result is still the opposite of the input, with just as
+-- convoluted a construction stack as the input's.
 neg :: Integer -> Integer
 neg Zero     = Zero
 neg (Succ a) = Pred (neg a)
@@ -64,10 +68,12 @@ eq (Succ a)  Zero     = False
 eq Zero     (Succ b)  = False
 eq (Pred a)  Zero     = False
 eq Zero     (Pred b)  = False
-
+-- strip away one layer of the stack and compare what's left
 eq (Succ a) (Succ b)  = eq a b
 eq (Pred a) (Pred b)  = eq a b
-eq _        _         = False
+-- anything that's left implies (LHS positive, RHS negative) or
+-- (LHS negative, RHS positive)
+eq  m        n        = False
 
 -- 0 is not greater than all positive numbers and is greater than all negative numbers
 -- `gt m n` is the syntactic equivalent of mathematical expression m > n
@@ -134,12 +140,14 @@ mul (Pred a)    (Succ b)    = mul (Succ b) (Pred a)
 div :: Integer -> Integer -> Integer
 div  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
 div  Zero     n          = Zero
-div  m       (Succ Zero) = m
+div  m       (Succ Zero) = m -- multiplicative identity. for illustrative purposes only
 -- div m         m       = Succ Zero
-div (Pred a) (Pred b)    = div (neg (Pred a)) (neg (Pred b))
-div (Pred a) (Succ b)    = neg (div (neg (Pred a)) (Succ b))
-div (Succ a) (Pred b)    = neg (div (Succ a) (neg (Pred b)))
-div  m        n
+-- sign handling cases: turn them both positive and negate the output quotient
+-- as needed
+div (Pred a) (Pred b)    = div (neg (Pred a)) (neg (Pred b)) -- m < 0, n < 0
+div (Pred a) (Succ b)    = neg (div (neg (Pred a)) (Succ b)) -- m < 0, n > 0
+div (Succ a) (Pred b)    = neg (div (Succ a) (neg (Pred b))) -- m > 0, n < 0
+div  m        n                                              -- m > 0, n > 0
     | lt m n             = Zero                     -- guards :(
     | otherwise          = Succ (div (sub m n) n)
 
