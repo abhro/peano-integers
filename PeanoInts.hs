@@ -143,6 +143,12 @@ div  m        n
     | lt m n             = Zero                     -- guards :(
     | otherwise          = Succ (div (sub m n) n)
 
+-- The signum function. Just for fun
+sgn :: Integer -> Integer
+sgn Zero     = Zero
+sgn (Pred _) = Pred Zero
+sgn (Succ _) = Succ Zero
+
 -- Quick naming of numbers from -9 to 9 inclusive
 p1 = Succ Zero :: Integer
 p2 = Succ p1   :: Integer
