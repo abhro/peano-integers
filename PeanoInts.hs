@@ -7,7 +7,7 @@
 --
 -- Some things have been ported (?) from Rust's Peano library
 
-import Prelude (Show, undefined, error)
+import Prelude (Show, undefined, otherwise)
 
 -- An integer can be 0, the successor of another integer (which may or may not
 -- be zero), or the predecessor of another integer (which also may or may not be
@@ -123,13 +123,25 @@ mul m           Zero        = Zero
 mul Zero        n           = Zero
 mul (Succ Zero) n           = n -- multiplicative identity
 mul m           (Succ Zero) = m -- multiplicative identity
-mul m           n           = error "Not yet implemented"
+mul (Succ a)    (Succ b)    = add (Succ a) (mul (Succ a) b)
+-- Anything involving the negatives just gets delegated to the two positives
+-- case. Suddenly I'm really glad I wrote `neg`
+mul (Pred a)    (Pred b)    = mul (neg (Pred a)) (neg (Pred b))
+mul (Succ a)    (Pred b)    = neg (mul (Succ a) (neg (Pred b)))
+mul (Pred a)    (Succ b)    = mul (Succ b) (Pred a)
 
 -- Truncated integer division
 div :: Integer -> Integer -> Integer
-div m Zero = undefined -- panic. I'm not getting involved with Maybe
-div Zero n = Zero
-div m n    = error "Not yet implemented"
+div  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
+div  Zero     n          = Zero
+div  m       (Succ Zero) = m
+-- div m         m       = Succ Zero
+div (Pred a) (Pred b)    = div (neg (Pred a)) (neg (Pred b))
+div (Pred a) (Succ b)    = neg (div (neg (Pred a)) (Succ b))
+div (Succ a) (Pred b)    = neg (div (Succ a) (neg (Pred b)))
+div  m        n
+    | lt m n             = Zero                     -- guards :(
+    | otherwise          = Succ (div (sub m n) n)
 
 -- Quick naming of numbers from -9 to 9 inclusive
 p1 = Succ Zero :: Integer
