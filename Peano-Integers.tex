@@ -1,0 +1,46 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper,top=1in]{geometry}
+\usepackage{titling}
+
+\newcommand{\N}{\mathbb{N}}
+
+\title{Peano Arithmetic for all integers\\[2pt]
+\large An extension of Peano's axioms for negative numbers}
+
+\preauthor{}
+\author{}
+\postauthor{\vspace{-12pt}}
+\date{2021}
+
+\begin{document}
+\maketitle
+
+Peano's axioms have been used to formalize a notion of natural numbers to start counting from 0 up to positive infinity. The axioms introduce their own data type, defined inductively as follows:
+\begin{enumerate}
+\item The set of natural numbers is called $\mathbb{N}$.
+\item The first element of the set is 0.
+\item Any other element of the set can be constructed by using $S(\cdot)$ on another element already within the set. (Here $S$ stands for successor, meaning that $S$ would provide the `next' number of the input given.)
+\end{enumerate}
+
+For simplicity and brevity the more exhaustive properties have been omitted with just the essence kept. Although the properties listed does not directly provide symbols for the more common use of natural numbers, one can easily identify $S(0)$ as 1, $S(S(0))$ as 2, and so. (One can also use $S(1)$ as 2 if 1 is defined as a symbolic shortcut for $S(0)$.)
+And so, the set can be listed as a roster as follows:
+\[\mathbb{N} = \left\{0, S(0), S(S(0)), S(S(S(0))), \dots\right\}\]
+
+Addition and multiplication have then been defined on this number system, as follows:
+\begin{align}
+n + 0 &= n \\
+m + S(b) &= S(m + b)
+\end{align}
+(Notice that the operations are identified between two numbers $m$ and $n$, where if one needs to deconstruct the numbers we use the following convention $m = S(a)$ and $n = S(b)$.)
+
+While counting forwards by adding one is simple, (i.e., given any number $n$ that one has, $S$ can be called to construct the next number $S(n)$) counting backwards can be achieved with a function $P$ (for predecessor) as follows:
+\begin{align}
+&{} P : \N \to \N \\
+&{} P(S(a)) = a
+\end{align}
+Notice that notation does not directly allow one to find the predecessor of a number $m$, instead it has to be identified as the successor of some other number $a$ and then the function $S$ `unwrapped'.
+
+However, the implementation of the predecessor function creates a problem: the number 0 is not the successor of any other number in the set, and it's predecessor has to be defined differently. Either we identify $P(0) = 0$ as a valid statement, or we say that $P(0)$ is undefined within $\N$, and so not allowing $P$ to be closed within the natural numbers.
+\end{document}
