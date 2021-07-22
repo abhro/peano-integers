@@ -7,7 +7,7 @@
 --
 -- Some things have been ported (?) from Rust's Peano library
 
-import Prelude (Show, undefined, otherwise)
+import Prelude (Show, undefined, otherwise, Bool(True, False))
 
 -- An integer can be 0, the successor of another integer (which may or may not
 -- be zero), or the predecessor of another integer (which also may or may not be
@@ -16,10 +16,6 @@ import Prelude (Show, undefined, otherwise)
 -- See https://en.wikipedia.org/wiki/Recursive_definition (also called inductive
 -- definition) for more details.
 data Integer = Zero | Pred Integer | Succ Integer deriving Show
-
--- Only so that we can support equality/comparison between two integers
-data Boolean = True | False deriving Show
-
 
 -- simplify chains of Pred and Succ which should never be chained together in
 -- canonical form
@@ -60,7 +56,7 @@ abs Zero     = Zero
 abs (Pred a) = Succ (abs a)
 abs n        = n
 
-eq :: Integer -> Integer -> Boolean
+eq :: Integer -> Integer -> Bool
 eq Zero      Zero     = True
 
 -- 0 is not equal to any nonzero integers
