@@ -71,6 +71,7 @@ eq (Pred a) (Pred b)  = eq a b
 -- (LHS negative, RHS positive)
 eq  m        n        = False
 
+gt :: Integer -> Integer -> Bool
 -- 0 is not greater than all positive numbers and is greater than all negative numbers
 -- `gt m n` is the syntactic equivalent of mathematical expression m > n
 gt  Zero   (Succ a)  = False
@@ -85,6 +86,7 @@ gt (Succ a) (Succ b) = gt a b
 -- if you go to zero faster when unwrapping, you are greater
 gt (Pred a) (Pred b) = gt a b
 
+lt :: Integer -> Integer -> Bool
 -- same logic as `gt`, just flipped
 lt  Zero   (Succ a)  = True
 lt  Zero   (Pred a)  = False
