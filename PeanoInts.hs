@@ -132,6 +132,10 @@ mul (Succ a)    (Succ b)    = add (Succ a) (mul (Succ a) b)
 -- case. Suddenly I'm really glad I wrote `neg`
 mul (Pred a)    (Pred b)    = mul (neg (Pred a)) (neg (Pred b))
 mul (Succ a)    (Pred b)    = neg (mul (Succ a) (neg (Pred b)))
+-- switch negative times positive to positive times negative. this matches the
+-- pattern right before this comment (and that to the two positives case). and
+-- I'm exceptionally thankful to God right now for making multiplication
+-- commutative.
 mul (Pred a)    (Succ b)    = mul (Succ b) (Pred a)
 
 -- Truncated integer division
@@ -158,7 +162,16 @@ quot = div
 rem :: Integer -> Integer -> Integer
 -- naive approach: r = m - n×q
 -- because div takes O(m/n) time and mul takes... who knows
-rem m n = sub m (mul n (div m n))
+-- rem m n = sub m (mul n (div m n))
+-- a little bit better approach:
+-- consider only non-negatives first:
+rem  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
+rem  Zero     n          = Zero
+rem  m       (Succ Zero) = Zero -- m / 1 = m, or, m = 1×m + 0
+rem  m        n
+    | lt m n             = m
+    | otherwise          = rem (sub m n) n
+-- what happens if m or n is negative? check future commits ig
 
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
