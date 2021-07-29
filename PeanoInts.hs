@@ -152,6 +152,14 @@ div  m        n                                              -- m > 0, n > 0
 quot :: Integer -> Integer -> Integer
 quot = div
 
+-- Get remainder r of dividing m by n. If q is the quotient, it should fulfill
+-- the following: m = n×q + r
+-- And so, the remainder should be negative if m is negative :(
+rem :: Integer -> Integer -> Integer
+-- naive approach: r = m - n×q
+-- because div takes O(m/n) time and mul takes... who knows
+rem m n = sub m (mul n (div n q))
+
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
 sgn Zero     = Zero
