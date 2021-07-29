@@ -158,7 +158,7 @@ quot = div
 rem :: Integer -> Integer -> Integer
 -- naive approach: r = m - n×q
 -- because div takes O(m/n) time and mul takes... who knows
-rem m n = sub m (mul n (div n q))
+rem m n = sub m (mul n (div m n))
 
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
