@@ -149,6 +149,9 @@ div  m        n                                              -- m > 0, n > 0
     | lt m n             = Zero                     -- guards :(
     | otherwise          = Succ (div (sub m n) n)
 
+quot :: Integer -> Integer -> Integer
+quot = div
+
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
 sgn Zero     = Zero
