@@ -94,8 +94,8 @@ lt (Pred a) Zero     = True
 lt (Succ a) Zero     = False
 lt (Succ a) (Pred b) = False
 lt (Pred a) (Succ b) = True
-lt (Succ a) (Succ b) = gt a b
-lt (Pred a) (Pred b) = gt a b
+lt (Succ a) (Succ b) = lt a b
+lt (Pred a) (Pred b) = lt a b
 
 add :: Integer -> Integer -> Integer
 add m    Zero  = m  -- additive identity
