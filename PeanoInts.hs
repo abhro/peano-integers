@@ -88,10 +88,10 @@ gt (Pred a) (Pred b) = gt a b
 
 lt :: Integer -> Integer -> Bool
 -- same logic as `gt`, just flipped
-lt  Zero   (Succ a)  = True
-lt  Zero   (Pred a)  = False
-lt (Pred a) Zero     = True
-lt (Succ a) Zero     = False
+lt  Zero    (Succ a) = True
+lt  Zero    (Pred a) = False
+lt (Pred a)  Zero    = True
+lt (Succ a)  Zero    = False
 lt (Succ a) (Pred b) = False
 lt (Pred a) (Succ b) = True
 lt (Succ a) (Succ b) = lt a b
@@ -140,18 +140,18 @@ mul (Pred a)    (Succ b)    = mul (Succ b) (Pred a)
 
 -- Truncated integer division
 div :: Integer -> Integer -> Integer
-div  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
-div  Zero     n          = Zero
-div  m       (Succ Zero) = m -- multiplicative identity. for illustrative purposes only
--- div m         m       = Succ Zero
+div  m        Zero        = undefined -- panic. I'm not getting involved with Maybe
+div  Zero     n           = Zero
+div  m       (Succ Zero)  = m -- multiplicative identity. for illustrative purposes only
+-- div m         m        = Succ Zero
 -- sign handling cases: turn them both positive and negate the output quotient
 -- as needed
-div (Pred a) (Pred b)    = div (neg (Pred a)) (neg (Pred b)) -- m < 0, n < 0
-div (Pred a) (Succ b)    = neg (div (neg (Pred a)) (Succ b)) -- m < 0, n > 0
-div (Succ a) (Pred b)    = neg (div (Succ a) (neg (Pred b))) -- m > 0, n < 0
+div m@(Pred a) n@(Pred b) = div (neg m) (neg n) -- m < 0, n < 0
+div m@(Pred a) n@(Succ b) = neg (div (neg m) n) -- m < 0, n > 0
+div m@(Succ a) n@(Pred b) = neg (div m (neg n)) -- m > 0, n < 0
 div  m        n                                              -- m > 0, n > 0
-    | lt m n             = Zero                     -- guards :(
-    | otherwise          = Succ (div (sub m n) n)
+    | lt m n              = Zero                     -- guards :(
+    | otherwise           = Succ (div (sub m n) n)
 
 quot :: Integer -> Integer -> Integer
 quot = div
@@ -165,22 +165,22 @@ rem :: Integer -> Integer -> Integer
 -- rem m n = sub m (mul n (div m n))
 -- a little bit better approach:
 -- exceptional cases
-rem  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
-rem  Zero     n          = Zero
-rem  m       (Succ Zero) = Zero -- m / 1 = m, or, m = 1×m + 0
+rem  m        Zero        = undefined -- panic. I'm not getting involved with Maybe
+rem  Zero     n           = Zero
+rem  m       (Succ Zero)  = Zero -- m / 1 = m, or, m = 1×m + 0
 -- what happens if m or n is negative? check future commits ig
 -- m > 0, n < 0: quotient q will also be negative, and q×n will be less than m.
 -- so the remainder will be positive to cover the distance (i.e., assume n > 0)
-rem (Succ a) (Pred b)    = rem (Succ a) (neg (Pred b))
+rem m@(Succ a) n@(Pred b) = rem m (neg n)
 -- m < 0, n > 0: quotient will be negative, and q×n will be to the right of m
 -- (number line). remainder must be negative
 -- m < 0, n < 0: same as before, only q and n switch signs
-rem (Pred a) (Succ b)    = neg (rem (neg (Pred a)) (Succ b))
-rem (Pred a) (Pred b)    = neg (rem (neg (Pred a)) (neg (Pred b)))
+rem m@(Pred a) n@(Succ b) = neg (rem (neg m) n)
+rem m@(Pred a) n@(Pred b) = neg (rem (neg m) (neg n))
 -- m and n are both positive
 rem  m        n
-    | lt m n             = m
-    | otherwise          = rem (sub m n) n
+    | lt m n              = m
+    | otherwise           = rem (sub m n) n
 
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
