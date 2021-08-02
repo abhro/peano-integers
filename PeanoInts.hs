@@ -164,14 +164,23 @@ rem :: Integer -> Integer -> Integer
 -- because div takes O(m/n) time and mul takes... who knows
 -- rem m n = sub m (mul n (div m n))
 -- a little bit better approach:
--- consider only non-negatives first:
+-- exceptional cases
 rem  m        Zero       = undefined -- panic. I'm not getting involved with Maybe
 rem  Zero     n          = Zero
 rem  m       (Succ Zero) = Zero -- m / 1 = m, or, m = 1×m + 0
+-- what happens if m or n is negative? check future commits ig
+-- m > 0, n < 0: quotient q will also be negative, and q×n will be less than m.
+-- so the remainder will be positive to cover the distance (i.e., assume n > 0)
+rem (Succ a) (Pred b)    = rem (Succ a) (neg (Pred b))
+-- m < 0, n > 0: quotient will be negative, and q×n will be to the right of m
+-- (number line). remainder must be negative
+-- m < 0, n < 0: same as before, only q and n switch signs
+rem (Pred a) (Succ b)    = neg (rem (neg (Pred a)) (Succ b))
+rem (Pred a) (Pred b)    = neg (rem (neg (Pred a)) (neg (Pred b)))
+-- m and n are both positive
 rem  m        n
     | lt m n             = m
     | otherwise          = rem (sub m n) n
--- what happens if m or n is negative? check future commits ig
 
 -- The signum function. Just for fun
 sgn :: Integer -> Integer
