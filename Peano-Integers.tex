@@ -8,7 +8,15 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
 
-\title{Peano Arithmetic for all integers\\[2pt]
+\newcommand{\ttneg}{\mathtt{neg}}
+\newcommand{\ttabs}{\mathtt{abs}}
+\newcommand{\ttadd}{\mathtt{add}}
+\newcommand{\ttsub}{\mathtt{sub}}
+\newcommand{\ttmul}{\mathtt{mul}}
+\newcommand{\ttdiv}{\mathtt{div}}
+\newcommand{\ttrem}{\mathtt{rem}}
+
+\title{Peano Arithmetic for all integers\\[4pt]
 \large An extension of Peano's axioms for negative numbers}
 
 \preauthor{}
@@ -112,20 +120,20 @@ To get away from the dry talk of algorithms and functions, I bring you two new a
 
 The first function we take a look at is negation, identified by $\mathtt{neg}$ which negates a number. It works as follows:
 \begin{align*}
-&{} \mathtt{neg} : \Z \to \Z \\
-&{} \mathtt{neg}(n) = \begin{cases}
+&{} \ttneg : \Z \to \Z \\
+&{} \ttneg(n) = \begin{cases}
 0 & \text{if} ~ n = 0 \\
-P(\mathtt{neg}(a)) & \text{if} ~ n ~ \text{has the form} ~ S(a) \\
-S(\mathtt{neg}(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a)
+P(\ttneg(a)) & \text{if} ~ n ~ \text{has the form} ~ S(a) \\
+S(\ttneg(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a)
 \end{cases}
 \end{align*}
 Also, I used the usual mathematical case-by-case description of a function to show what it may look like, but it involves more typing on my part and so I'm foregoing it for all other functions except the two here.
 
 The second function is the absolute value operation, which simply flips all the $P$ in a stack to $S$.
 \begin{align*}
-&{} \mathtt{abs} : \Z \to \Z \\
-&{} \mathtt{abs}(n) = \begin{cases}
-S(\mathtt{abs}(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a) \\
+&{} \ttabs : \Z \to \Z \\
+&{} \ttabs(n) = \begin{cases}
+S(\ttabs(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a) \\
 n & \text{otherwise}
 \end{cases}
 \end{align*}
@@ -135,13 +143,89 @@ n & \text{otherwise}
 \subsection*{Starting with the arithmetic}
 Now that our numbers have been defined and we know how to navigate over them, let's start by abstracting away some of that navigation by defining the four basic arithmetic operations.
 
-The first one is addition, implemented by the $\mathtt{add}$ function. The syntax equivalence is $\mathtt{add}(a, b) = a + b$.\footnote{The definitions on the right are only to make commutativity explicit and can be safely ignored.}
+\subsubsection*{Addition}
+The first one is addition, implemented by the $\ttadd$ function. The syntax equivalence is $\ttadd(a, b) = a + b$.\footnote{The definitions on the right are only to make commutativity explicit and can be safely ignored.}
 \begin{align*}
-&{} \mathtt{add} : \Z \times \Z \to \Z \\
-&{} \mathtt{add} : (n,0) \mapsto n &&{} \mathtt{add} : (0, n) \mapsto n \\
-&{} \mathtt{add} : (P(a), S(b)) \mapsto \mathtt{add}(a, b) &&{} \mathtt{add} : (S(a), P(b)) \mapsto \mathtt{add}(a, b) \\
-&{} \mathtt{add} : (P(a), P(b)) \mapsto \mathtt{add}(a, P(P(b))) \\
-&{} \mathtt{add} : (S(a), S(b)) \mapsto \mathtt{add}(a, S(S(b)))
+&{} \ttadd : \Z \times \Z \to \Z \\
+&{} \ttadd : (n, 0) \mapsto n &
+&{} \ttadd : (0, n) \mapsto n \\
+&{} \ttadd : (P(a), S(b)) \mapsto \ttadd(a, b) &
+&{} \ttadd : (S(a), P(b)) \mapsto \ttadd(a, b) \\
+&{} \ttadd : (P(a), P(b)) \mapsto \ttadd(a, P(P(b))) \\
+&{} \ttadd : (S(a), S(b)) \mapsto \ttadd(a, S(S(b)))
 \end{align*}
 The first line refers to the use of 0 as the additive identity. The second line matches one number as negative and one number as positive.   We make the decompositions $m = a - 1$ and $n = b + 1$. This allows $m + n = a - 1 + b + 1 = a + b$. This also minimizes the depth of the stack and eventually it reduces down with either side being 0 and the whole computation being reduced to the additive identity. The $(m, n)$ both negative and $(m, n)$ both positive cases work the same way, where we remove one layer of $P$ or $S$ call from one integer to give to the other integer.
+
+\subsubsection*{Subtraction}
+TODO: write-up
+\begin{align*}
+&{} \ttsub : \Z \times \Z \to \Z \\
+&{} \ttsub : (m, 0) \mapsto m \\
+&{} \ttsub : (0, m) \mapsto \ttneg(n) \\
+&{} \ttsub : (m, P(b)) \mapsto \ttadd(m, \ttneg(P(b))) \\
+&{} \ttsub : (S(a), S(b)) \mapsto \ttsub(a, b) \\
+&{} \ttsub : (P(a), S(b)) \mapsto P(P(\ttsub(a, b)))
+\end{align*}
+
+More simply,
+\[ \ttsub : (m, n) \mapsto \ttadd(m, \ttneg(n)) \]
+
+\subsubsection*{Multiplication}
+TODO: write-up
+\begin{align*}
+&{} \ttmul : \Z \times \Z \to \Z \\
+&{} \ttmul : (m, 0) \mapsto 0 &
+&{} \ttmul : (0, n) \mapsto 0 \\
+&{} \ttmul : (m, S(0)) \mapsto m &
+&{} \ttmul : (S(0), n) \mapsto n \\
+&{} \ttmul : (m=S(a), S(b)) \mapsto \ttadd(m, \ttmul(m, b)) \\
+&{} \ttmul : (m=P(a), n=P(b)) \mapsto \ttmul(\ttneg(m), \ttneg(n)) \\
+&{} \ttmul : (m=S(a), n=P(b)) \mapsto \ttneg(\ttmul(m, \ttneg(n))) \\
+&{} \ttmul : (m=P(a), n=S(b)) \mapsto \ttmul(n, m)
+\end{align*}
+
+\subsection*{Division}
+TODO: write-up
+\begin{align*}
+&{} \ttdiv : \Z \times \Z \to \Z \\
+&{} \ttdiv : (m, 0) \mapsto \mathtt{undefined} \\
+&{} \ttdiv : (0, n) \mapsto 0 \\
+&{} \ttdiv : (m, S(0)) \mapsto m \\
+&{} \ttdiv : (m=P(a), n=P(b)) \mapsto \ttdiv(\ttneg(m), \ttneg(n)) \\
+&{} \ttdiv : (m=P(a), n=S(b)) \mapsto \ttneg(\ttdiv(\ttneg(m)), n) \\
+&{} \ttdiv : (m=S(a), n=P(b)) \mapsto \ttneg(\ttdiv(m, \ttneg(n))) \\
+&{} \ttdiv : (m, n) \mapsto \begin{cases}
+0 & \text{if} ~ m < n \\
+S(\ttdiv(\ttsub(m, n), n)) & \text{otherwise}
+\end{cases}
+\end{align*}
+
+\subsection*{Bonus: Remainder}
+TODO: write-up
+\begin{align*}
+&{} \ttrem : \Z \times \Z \to \Z \\
+&{} \ttrem : (m, 0) \mapsto \mathtt{undefined} \\
+&{} \ttrem : (0, n) \mapsto 0 \\
+&{} \ttrem : (m, S(0)) \mapsto 0 \\
+&{} \ttrem : (m=S(a), n=P(b)) \mapsto \ttrem(m, \ttneg(n)) \\
+&{} \ttrem : (m=P(a), n=S(b)) \mapsto \ttneg(\ttrem(\ttneg(m), n)) \\
+&{} \ttrem : (m=P(a), n=P(b)) \mapsto \ttneg(\ttrem(\ttneg(m), \ttneg(n))) \\
+&{} \ttrem : (m, n) \mapsto \begin{cases}
+m & \text{if} ~ m < n \\
+\ttrem(\ttsub(m, n), n) & \text{otherwise}
+\end{cases}
+\end{align*}
+
+Concisely,
+\[ \ttrem(m, n) = \ttsub(m, \ttmul(n, \ttdiv(m, n))) \]
+
+\subsection*{Double bonus: Sign/Signum function}
+TODO: write-up
+\begin{align*}
+&{} \mathtt{sgn} : \Z \times \Z \to \Z \\
+&{} \mathtt{sgn} : 0 \mapsto 0 \\
+&{} \mathtt{sgn} : P(a) \mapsto P(1) \\
+&{} \mathtt{sgn} : S(a) \mapsto S(1) \\
+\end{align*}
+
 \end{document}
