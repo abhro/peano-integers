@@ -72,8 +72,8 @@ What is also implied by the axioms is that $S(\cdot)$ and $P(\cdot)$ work like i
 The intuition behind this can be identified with the number line. With axiom 2, we can be placed in the center of the line at 0, and if we call $S$ on ourselves (and imagine ourselves to be a number), we can take one step to the right. And similarly, we can call $P$ on ourselves to go one step to the left. And since we don't have to stop at 0, we can call $P$ there to take one step to the left, landing us at $-1$ and into the world of negative numbers. The set can thus be illustrated in roster form as (only writing down the integers from $-3$ to 3 inclusive):
 \[\mathbb{Z} = \left\{\dots, P(P(P(0))), P(P(0)), P(0), 0, S(0), S(S(0)), S(S(S(0))), \dots\right\}\]
 
-\fbox{
-\parbox{0.9\textwidth}{
+\fbox{\@
+\parbox{0.9\textwidth}{\@
 \textbf{\large A note about canonical forms}
 
 Since $P$ can be used to cancel out $S$ and vice versa, it makes sense to identify all numbers as a chain of calls to $P$ or $S$ until the stack ends in 0 with there being no calls to $S$ after one to $P$ or vice versa. This also allows us to quickly determine whether a number is negative or positive by simply peeking at the top constructor of the stack and seeing whether it is $P$ (negative) or $S$ (positive). However, the axioms stated do give us the freedom to chain the calls whimsically and still get a number out of it. For example, $S(S(S(S(S(P(S(P(S(P(S(P(P(P(S(0)))))))))))))))$ is just as valid an integer, and is in fact equivalent to $S(S(S(0)))$, or 3. However, trying to reason about these complicated stacks become very hard, and we therefore identify a canonical/normal form for a number. We say 0 is in canonical form, and any piece of data that only has $P$ or $S$ in its data construction/call stack is in canonical form. Any other piece of data (that mixes $P$ and $S$ in its stack) is not in canonical form. And the following function has been provided to reduce a number to its canonical form:
@@ -112,8 +112,8 @@ Another thing to note here is that the order in which the statements appear matt
 
 \vspace{4pt}
 
-\fbox{
-\parbox{0.9\linewidth}{
+\fbox{\@
+\parbox{0.9\linewidth}{\@
 \textbf{\large Cutting the monotony with two simple algorithms}
 
 To get away from the dry talk of algorithms and functions, I bring you two new algorithms and functions. This time, the ideas are so simple that you can read passively while thinking about whether you filed your tax papers correctly.
@@ -122,9 +122,9 @@ The first function we take a look at is negation, identified by $\mathtt{neg}$ w
 \begin{align*}
 &{} \ttneg : \Z \to \Z \\
 &{} \ttneg(n) = \begin{cases}
-0 & \text{if} ~ n = 0 \\
-P(\ttneg(a)) & \text{if} ~ n ~ \text{has the form} ~ S(a) \\
-S(\ttneg(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a)
+0 & \text{if } n = 0 \\
+P(\ttneg(a)) & \text{if } n \; \text{has the form } S(a) \\
+S(\ttneg(a)) & \text{if } n \; \text{has the form } P(a)
 \end{cases}
 \end{align*}
 Also, I used the usual mathematical case-by-case description of a function to show what it may look like, but it involves more typing on my part and so I'm foregoing it for all other functions except the two here.
@@ -133,7 +133,7 @@ The second function is the absolute value operation, which simply flips all the 
 \begin{align*}
 &{} \ttabs : \Z \to \Z \\
 &{} \ttabs(n) = \begin{cases}
-S(\ttabs(a)) & \text{if} ~ n ~ \text{has the form} ~ P(a) \\
+S(\ttabs(a)) & \text{if } n \; \text{has the form } P(a) \\
 n & \text{otherwise}
 \end{cases}
 \end{align*}
@@ -157,7 +157,7 @@ The first one is addition, implemented by the $\ttadd$ function. The syntax equi
 The first line refers to the use of 0 as the additive identity. The second line matches one number as negative and one number as positive.   We make the decompositions $m = a - 1$ and $n = b + 1$. This allows $m + n = a - 1 + b + 1 = a + b$. This also minimizes the depth of the stack and eventually it reduces down with either side being 0 and the whole computation being reduced to the additive identity. The $(m, n)$ both negative and $(m, n)$ both positive cases work the same way, where we remove one layer of $P$ or $S$ call from one integer to give to the other integer.
 
 \subsubsection*{Subtraction}
-TODO: write-up
+TODO:\@{}write-up
 \begin{align*}
 &{} \ttsub : \Z \times \Z \to \Z \\
 &{} \ttsub : (m, 0) \mapsto m \\
@@ -171,7 +171,7 @@ More simply,
 \[ \ttsub : (m, n) \mapsto \ttadd(m, \ttneg(n)) \]
 
 \subsubsection*{Multiplication}
-TODO: write-up
+TODO:\@{}write-up
 \begin{align*}
 &{} \ttmul : \Z \times \Z \to \Z \\
 &{} \ttmul : (m, 0) \mapsto 0 &
@@ -185,7 +185,7 @@ TODO: write-up
 \end{align*}
 
 \subsection*{Division}
-TODO: write-up
+TODO:\@{}write-up
 \begin{align*}
 &{} \ttdiv : \Z \times \Z \to \Z \\
 &{} \ttdiv : (m, 0) \mapsto \mathtt{undefined} \\
@@ -195,13 +195,13 @@ TODO: write-up
 &{} \ttdiv : (m=P(a), n=S(b)) \mapsto \ttneg(\ttdiv(\ttneg(m)), n) \\
 &{} \ttdiv : (m=S(a), n=P(b)) \mapsto \ttneg(\ttdiv(m, \ttneg(n))) \\
 &{} \ttdiv : (m, n) \mapsto \begin{cases}
-0 & \text{if} ~ m < n \\
+0 & \text{if } m < n \\
 S(\ttdiv(\ttsub(m, n), n)) & \text{otherwise}
 \end{cases}
 \end{align*}
 
 \subsection*{Bonus: Remainder}
-TODO: write-up
+TODO:\@{}write-up
 \begin{align*}
 &{} \ttrem : \Z \times \Z \to \Z \\
 &{} \ttrem : (m, 0) \mapsto \mathtt{undefined} \\
@@ -211,8 +211,8 @@ TODO: write-up
 &{} \ttrem : (m=P(a), n=S(b)) \mapsto \ttneg(\ttrem(\ttneg(m), n)) \\
 &{} \ttrem : (m=P(a), n=P(b)) \mapsto \ttneg(\ttrem(\ttneg(m), \ttneg(n))) \\
 &{} \ttrem : (m, n) \mapsto \begin{cases}
-m & \text{if} ~ m < n \\
-\ttrem(\ttsub(m, n), n) & \text{otherwise}
+    m & \text{if } m < n \\
+    \ttrem(\ttsub(m, n), n) & \text{otherwise}
 \end{cases}
 \end{align*}
 
@@ -220,7 +220,7 @@ Concisely,
 \[ \ttrem(m, n) = \ttsub(m, \ttmul(n, \ttdiv(m, n))) \]
 
 \subsection*{Double bonus: Sign/Signum function}
-TODO: write-up
+TODO:\@{}write-up
 \begin{align*}
 &{} \mathtt{sgn} : \Z \times \Z \to \Z \\
 &{} \mathtt{sgn} : 0 \mapsto 0 \\
