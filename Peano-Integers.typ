@@ -71,15 +71,17 @@ $
     bb(Z) = {dots, P(P(P(0))), P(P(0)), P(0), 0, S(0), S(S(0)), S(S(S(0))), dots}
 $
 
-#box(stroke: black)[
+#box(stroke: black, inset: 0.9em, width: 1fr)[
     #align(center)[*A note about canonical forms*]
 
-    Since $P$ can be used to cancel out $S$ and vice versa, it makes sense to identify all numbers as a chain of calls to $P$ or $S$ until the stack ends in 0 with there being no calls to $S$ after one to $P$ or vice versa. This also allows us to quickly determine whether a number is negative or positive by simply peeking at the top constructor of the stack and seeing whether it is $P$ (negative) or $S$ (positive). However, the axioms stated do give us the freedom to chain the calls whimsically and still get a number out of it. For example, $S(S(S(S(S(P(S(P(S(P(S(P(P(P(S(0)))))))))))))))$ is just as valid an integer, and is in fact equivalent to $S(S(S(0)))$, or 3. However, trying to reason about these complicated stacks become very hard, and we therefore identify a canonical/normal form for a number. We say 0 is in canonical form, and any piece of data that only has $P$ or $S$ in its data construction/call stack is in canonical form. Any other piece of data (that mixes $P$ and $S$ in its stack) is not in canonical form. And the following function has been provided to reduce a number to its canonical form:
+    Since $P$ can be used to cancel out $S$ and vice versa, it makes sense to identify all numbers as a chain of calls to only $P$ or only $S$ until the stack ends in $0$ with there being no calls to $S$ after one to $P$ or vice versa. This also allows us to quickly determine whether a number is negative or positive by simply peeking at the top constructor of the stack and seeing whether it is $P$ (negative) or $S$ (positive). However, the axioms stated do give us the freedom to chain the calls whimsically and still get a number out of it. For example, $S(S(S(S(S(P(S(P(S(P(S(P(P(P(S(0)))))))))))))))$ is just as valid an integer, and is in fact equivalent to $S(S(S(0)))$, or $3$. However, trying to reason about these complicated stacks become very hard, and we therefore identify a canonical/normal form for a number. We say 0 is in canonical form, and any piece of data that only has $P$ or $S$ in its data construction/call stack is in canonical form. Any other piece of data (that mixes $P$ and $S$ in its stack) is not in canonical form. And the following function has been provided to reduce a number to its canonical form:
     $
-        & simplify : bb(Z) arrow bb(Z) \
-        & simplify : S(P(a)) mapsto simplify(a) \
-        & simplify : P(S(a)) mapsto simplify(a) \
+        simplify : bb(Z) arrow bb(Z)
+    $
+    $
+        & simplify : S(P(a)) mapsto simplify(a) #h(2em) &
         & simplify : P(a) mapsto P(simplify(a)) \
+        & simplify : P(S(a)) mapsto simplify(a) #h(2em) &
         & simplify : S(a) mapsto S(simplify(a))
     $
     Notice that the number of interest here was an integer $n$, although that was nowhere to be found. Instead, we decomposed $n$ as one of the four forms $S(P(a))$, $P(S(a))$, $P(a)$, or $S(a)$. And since a formula was impossible to provide for $simplify(n) = f(n)$, we used pattern matching on the constructors instead.
@@ -112,7 +114,7 @@ Another thing to note here is that the order in which the statements appear matt
 
 #v(4pt)
 
-#box(stroke: black)[
+#box(stroke: black, inset: 0.8em,  width: 1fr)[
     #align(center)[*Cutting the monotony with two simple algorithms*]
 
     To get away from the dry talk of algorithms and functions, I bring you two new algorithms and functions. This time, the ideas are so simple that you can read passively while thinking about whether you filed your tax papers correctly.
@@ -175,16 +177,17 @@ $ sub : (m, n) mapsto add(m, neg(n)) $
 
 TODO: write-up
 
+#let bang() = h(-0.1pt)
 $
     & mul : bb(Z) times bb(Z) arrow bb(Z) \
     & mul : (m, 0)           &mapsto& 0 &
     & mul : (0, n)           &mapsto& 0 \
     & mul : (m, S(0))        &mapsto& m &
     & mul : (S(0), n)        &mapsto& n \
-    & mul : (m=S(a), S(b))   &mapsto& add(m, mul(m, b)) \
-    & mul : (m=P(a), n=P(b)) &mapsto& mul(neg(m), neg(n)) \
-    & mul : (m=S(a), n=P(b)) &mapsto& neg(mul(m, neg(n))) #h(2em) \
-    & mul : (m=P(a), n=S(b)) &mapsto& mul(n, m)
+    & mul : (m#bang()=#bang()S(a), S(b))   &mapsto& add(m, mul(m, b)) \
+    & mul : (m#bang()=#bang()P(a), n#bang()=#bang()P(b)) &mapsto& mul(neg(m), neg(n)) \
+    & mul : (m#bang()=#bang()S(a), n#bang()=#bang()P(b)) &mapsto& neg(mul(m, neg(n))) #h(2em) \
+    & mul : (m#bang()=#bang()P(a), n#bang()=#bang()S(b)) &mapsto& mul(n, m)
 $
 
 = Division
@@ -196,9 +199,9 @@ $
     & div : (m, 0) &mapsto& #raw("undefined") \
     & div : (0, n) &mapsto& 0 \
     & div : (m, S(0)) &mapsto& m \
-    & div : (m=P(a), n=P(b)) &mapsto& div(neg(m), neg(n)) \
-    & div : (m=P(a), n=S(b)) &mapsto& neg(div(neg(m)), n) \
-    & div : (m=S(a), n=P(b)) &mapsto& neg(div(m, neg(n))) \
+    & div : (m#bang()=P(a), n#bang()=#bang()P(b)) &mapsto& div(neg(m), neg(n)) \
+    & div : (m#bang()=P(a), n#bang()=#bang()S(b)) &mapsto& neg(div(neg(m)), n) \
+    & div : (m#bang()=S(a), n#bang()=#bang()P(b)) &mapsto& neg(div(m, neg(n))) \
     & div : (m, n) &mapsto& cases(
         0 & "if" m < n,
         S(div(sub(m, n), n)) & "otherwise",
@@ -214,9 +217,9 @@ $
     & rem : (m, 0) &mapsto& #raw("undefined") \
     & rem : (0, n) &mapsto& 0 \
     & rem : (m, S(0)) &mapsto& 0 \
-    & rem : (m=S(a), n=P(b)) &mapsto& rem(m, neg(n)) \
-    & rem : (m=P(a), n=S(b)) &mapsto& neg(rem(neg(m), n)) \
-    & rem : (m=P(a), n=P(b)) &mapsto& neg(rem(neg(m), neg(n))) \
+    & rem : (m#bang()=#bang()S(a), n#bang()=#bang()P(b)) &mapsto& rem(m, neg(n)) \
+    & rem : (m#bang()=#bang()P(a), n#bang()=#bang()S(b)) &mapsto& neg(rem(neg(m), n)) \
+    & rem : (m#bang()=#bang()P(a), n#bang()=#bang()P(b)) &mapsto& neg(rem(neg(m), neg(n))) \
     & rem : (m, n) &mapsto& cases(
         m & "if" m < n,
         rem(sub(m, n), n) & "otherwise"
