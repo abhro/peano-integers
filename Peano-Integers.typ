@@ -1,6 +1,4 @@
-#set page(
-    paper: "a4",
-)
+#set page(paper: "a4")
 
 #let pred = raw("pred")
 #let succ = raw("succ")
@@ -15,13 +13,13 @@
 #let sgn = raw("sgn")
 
 #align(center, {
-    text(17pt)[*Peano Arithmetic for all integers*]
-    linebreak()
-    linebreak()
-    text(13pt)[*An extension of Peano's axioms for negative numbers*]
-    linebreak()
-    linebreak()
-    text(12pt)[*2021*]
+  text(18pt)[Peano Arithmetic for all integers]
+  linebreak()
+  linebreak()
+  text(13pt)[An extension of Peano's axioms for negative numbers]
+  linebreak()
+  linebreak()
+  text(12pt)[2021]
 })
 
 Peano's axioms have been used to formalize a notion of natural numbers to start counting from 0 up to positive infinity. The axioms introduce their own data type, defined inductively as follows:
@@ -42,7 +40,7 @@ $
 
 While counting forwards by adding one is simple, (i.e., given any number $n$ that one has, $S$ can be called to construct the next number $S(n)$) counting backwards can be achieved with a function $P$ (for predecessor) as follows:
 $
-    & P: bb(N) arrow bb(N) \
+    & P: bb(N) → bb(N) \
     & P(S(a)) = a
 $
 Notice that notation does not directly allow one to find the predecessor of a number $m$, instead it has to be identified as the successor of some other number $a$ and then the function $S$ 'unwrapped'.
@@ -75,14 +73,12 @@ $
     #align(center)[*A note about canonical forms*]
 
     Since $P$ can be used to cancel out $S$ and vice versa, it makes sense to identify all numbers as a chain of calls to only $P$ or only $S$ until the stack ends in $0$ with there being no calls to $S$ after one to $P$ or vice versa. This also allows us to quickly determine whether a number is negative or positive by simply peeking at the top constructor of the stack and seeing whether it is $P$ (negative) or $S$ (positive). However, the axioms stated do give us the freedom to chain the calls whimsically and still get a number out of it. For example, $S(S(S(S(S(P(S(P(S(P(S(P(P(P(S(0)))))))))))))))$ is just as valid an integer, and is in fact equivalent to $S(S(S(0)))$, or $3$. However, trying to reason about these complicated stacks become very hard, and we therefore identify a canonical/normal form for a number. We say 0 is in canonical form, and any piece of data that only has $P$ or $S$ in its data construction/call stack is in canonical form. Any other piece of data (that mixes $P$ and $S$ in its stack) is not in canonical form. And the following function has been provided to reduce a number to its canonical form:
+    $ simplify : bb(Z) → bb(Z) $
     $
-        simplify : bb(Z) arrow bb(Z)
-    $
-    $
-        & simplify : S(P(a)) mapsto simplify(a) #h(2em) &
-        & simplify : P(a) mapsto P(simplify(a)) \
-        & simplify : P(S(a)) mapsto simplify(a) #h(2em) &
-        & simplify : S(a) mapsto S(simplify(a))
+      & simplify : S(P(a)) mapsto simplify(a) #h(2em) &
+      & simplify : P(a) mapsto P(simplify(a)) \
+      & simplify : P(S(a)) mapsto simplify(a) #h(2em) &
+      & simplify : S(a) mapsto S(simplify(a))
     $
     Notice that the number of interest here was an integer $n$, although that was nowhere to be found. Instead, we decomposed $n$ as one of the four forms $S(P(a))$, $P(S(a))$, $P(a)$, or $S(a)$. And since a formula was impossible to provide for $simplify(n) = f(n)$, we used pattern matching on the constructors instead.
 
@@ -94,19 +90,19 @@ The function provided in the box has a form that will appear a lot throughout th
 
 Another such example can be found with the new predecessor and successor functions we have to define. Since we can take a step to the left by calling $P$ or removing an $S$, we can formalize the notions as follows:
 
-#columns(2)[
-    $
-        & pred : bb(Z) arrow bb(Z) \
-        & pred : S(a) mapsto a & #h(2em) (n = S(a)) \
-        & pred : n mapsto P(n)
-    $
-    #colbreak()
-    $
-        & succ : bb(Z) arrow bb(Z) \
-        & succ : P(a) mapsto a & #h(2em) (n = P(a)) \
-        & succ : n mapsto S(n)
-    $
-]
+#grid(
+  columns: (1fr, 1fr),
+  $
+    & pred : bb(Z) → bb(Z) \
+    & pred : S(a) mapsto a & #h(2em) (n = S(a)) \
+    & pred : n mapsto P(n)
+  $,
+  $
+    & succ : bb(Z) → bb(Z) \
+    & succ : P(a) mapsto a & #h(2em) (n = P(a)) \
+    & succ : n mapsto S(n)
+  $
+)
 
 The usage of `pred` and `succ` simplifies our lives by letting the call stacks stay uncluttered, but they don't detect if a number is not in canonical form. And so, for the rest of this article, any functions we define will simply assume the numbers are in canonical form to simplify computations.
 
@@ -114,31 +110,32 @@ Another thing to note here is that the order in which the statements appear matt
 
 #v(4pt)
 
-#box(stroke: black, inset: 0.8em,  width: 1fr)[
-    #align(center)[*Cutting the monotony with two simple algorithms*]
-
+#box(stroke: black, inset: 0.8em,  width: 1fr, {
+  align(center)[*Cutting the monotony with two simple algorithms*]
+  [
     To get away from the dry talk of algorithms and functions, I bring you two new algorithms and functions. This time, the ideas are so simple that you can read passively while thinking about whether you filed your tax papers correctly.
 
     The first function we take a look at is negation, identified by `neg` which negates a number. It works as follows:
     $
-        & neg : bb(Z) arrow bb(Z) \
-        & neg(n) = cases(
-            0 & "if" n = 0,
-            P(neg(a)) & "if" n "has the form" S(a),
-            S(neg(a)) #h(2em) & "if" n "has the form" P(a)
-        )
+      & neg : bb(Z) → bb(Z) \
+      & neg(n) = cases(
+          0 & "if" n = 0,
+          P(neg(a)) & "if" n "has the form" S(a),
+          S(neg(a)) #h(2em) & "if" n "has the form" P(a)
+      )
     $
     Also, I used the usual mathematical case-by-case description of a function to show what it may look like, but it involves more typing on my part and so I'm foregoing it for all other functions except the two here.
 
     The second function is the absolute value operation, which simply flips all the $P$ in a stack to $S$.
     $
-        & abs : bb(Z) arrow bb(Z) \
-        & abs(n) = cases(
-            S(abs(a)) #h(2em) & "if" n "has the form" P(a),
-            n & "otherwise"
-        )
+      & abs : bb(Z) → bb(Z) \
+      & abs(n) = cases(
+          S(abs(a)) #h(2em) & "if" n "has the form" P(a),
+          n & "otherwise"
+      )
     $
-]
+  ]
+})
 
 = Starting with the arithmetic
 Now that our numbers have been defined and we know how to navigate over them, let's start by abstracting away some of that navigation by defining the four basic arithmetic operations.
@@ -147,7 +144,7 @@ Now that our numbers have been defined and we know how to navigate over them, le
 The first one is addition, implemented by the `add` function. The syntax equivalence is `add`$(a, b) = a + b$.#footnote[The definitions on the right are only to make commutativity explicit and can be safely ignored.]
 
 $
-    & add: bb(Z) times bb(Z) arrow bb(Z) \
+    & add: bb(Z) × bb(Z) → bb(Z) \
     & add: (n, 0)       &mapsto& n &
     & add: (0, n)       &mapsto& n \
     & add: (P(a), S(b)) &mapsto& add(a, b) &
@@ -160,18 +157,19 @@ The first line refers to the use of 0 as the additive identity. The second line 
 
 == Subtraction
 
-TODO: write-up
+Subtraction can be very simply defined by adding the negative of a number:
+$ sub : (m, n) mapsto add(m, neg(n)) $
+
+But if one were concerned with stack depth or other implementation efficiencies, the explicit calculation of a subtraction function can also be written as
 
 $
-    & sub : bb(Z) times bb(Z) arrow bb(Z) \
+    & sub : bb(Z) × bb(Z) → bb(Z) \
     & sub : (m, 0)       &mapsto& m \
     & sub : (0, m)       &mapsto& neg(n) \
     & sub : (m, P(b))    &mapsto& add(m, neg(P(b))) \
     & sub : (S(a), S(b)) &mapsto& sub(a, b) \
     & sub : (P(a), S(b)) &mapsto& P(P(sub(a, b)))
 $
-More simply,
-$ sub : (m, n) mapsto add(m, neg(n)) $
 
 == Multiplication
 
@@ -179,7 +177,7 @@ TODO: write-up
 
 #let bang() = h(-0.1pt)
 $
-    & mul : bb(Z) times bb(Z) arrow bb(Z) \
+    & mul : bb(Z) × bb(Z) → bb(Z) \
     & mul : (m, 0)           &mapsto& 0 &
     & mul : (0, n)           &mapsto& 0 \
     & mul : (m, S(0))        &mapsto& m &
@@ -195,7 +193,7 @@ $
 TODO: write-up
 
 $
-    & div : bb(Z) times bb(Z) arrow bb(Z) \
+    & div : bb(Z) × bb(Z) → bb(Z) \
     & div : (m, 0) &mapsto& #raw("undefined") \
     & div : (0, n) &mapsto& 0 \
     & div : (m, S(0)) &mapsto& m \
@@ -213,7 +211,7 @@ $
 TODO: write-up
 
 $
-    & rem : bb(Z) times bb(Z) arrow bb(Z) \
+    & rem : bb(Z) × bb(Z) → bb(Z) \
     & rem : (m, 0) &mapsto& #raw("undefined") \
     & rem : (0, n) &mapsto& 0 \
     & rem : (m, S(0)) &mapsto& 0 \
@@ -231,7 +229,7 @@ $
 TODO: write-up
 
 $
-    & sgn : &bb(Z) arrow& {P(0), 0, S(0)} \
+    & sgn : &bb(Z) →& {P(0), 0, S(0)} \
     & sgn : &0    mapsto& 0 \
     & sgn : &P(a) mapsto& P(0) \
     & sgn : &S(a) mapsto& S(0)
